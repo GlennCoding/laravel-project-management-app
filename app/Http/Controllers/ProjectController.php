@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\In;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -47,7 +49,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return Inertia::render('Projects/Index', ['projects' => [$project]]);
+        return Inertia::render('Projects/Project', ['project' => $project]);
     }
 
     /**
@@ -55,13 +57,13 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return Inertia::render('Projects/Edit', ['project' => $project]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Project $project)
+    public function update(Request $request, Project $project): RedirectResponse
     {
         $validated = $request->validate([
             'title' => 'required',
@@ -70,7 +72,7 @@ class ProjectController extends Controller
 
         $project->update($validated);
 
-        return redirect(route('projects.index'));
+        return redirect(route('projects.show', ['project' => $project]));
     }
 
     /**

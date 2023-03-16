@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Inertia\Testing\Assert;
 use Tests\TestCase;
 
 class ProjectsTest extends TestCase
@@ -20,7 +21,6 @@ class ProjectsTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = User::factory()->create();
-        $this->actingAs($user)->withSession(['banned' => false]);
 
         $attributes = [
             'title' => $this->faker->sentence,
@@ -28,7 +28,7 @@ class ProjectsTest extends TestCase
         ];
 
 
-        $response = $this->post('/projects', $attributes);
+        $response = $this->actingAs($user)->post('/projects', $attributes);
 
         $response->assertRedirect('/projects');
 
@@ -41,10 +41,10 @@ class ProjectsTest extends TestCase
     public function a_user_can_view_projects(): void
     {
         $this->withoutExceptionHandling();
-        $user = User::factory()->has(Project::factory()->count(5))->create();
-        $this->actingAs($user);
 
-        $this->get('/projects')->assertSuccessful();
+        $user = User::factory()->has(Project::factory()->count(5))->create();
+
+        $this->actingAs($user)->get('/projects')->assertSuccessful();
     }
 
     /**
@@ -54,7 +54,6 @@ class ProjectsTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $user = User::factory()->has(Project::factory())->create();
-        $this->actingAs($user);
 
         $firstProjectId = $user->projects()->first()->id;
 
@@ -62,6 +61,8 @@ class ProjectsTest extends TestCase
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph
         ];
+
+        $this->actingAs($user)->get("/projects/$firstProjectId/edit")->assertSuccessful();
 
         $response = $this->patch("/projects/$firstProjectId", $newProjectAttributes);
 
@@ -76,12 +77,12 @@ class ProjectsTest extends TestCase
     public function a_user_can_delete_projects(): void
     {
         $this->withoutExceptionHandling();
+
         $user = User::factory()->has(Project::factory())->create();
-        $this->actingAs($user);
 
         $firstProjectId = $user->projects()->first()->id;
 
-        $response = $this->delete("/projects/$firstProjectId");
+        $response = $this->actingAs($user)->delete("/projects/$firstProjectId");
 
         $response->assertRedirect();
 
@@ -94,13 +95,15 @@ class ProjectsTest extends TestCase
     public function a_user_can_view_a_specific_project(): void
     {
         $this->withoutExceptionHandling();
+
         $user = User::factory()->has(Project::factory())->create();
-        $this->actingAs($user);
 
         $firstProjectId = $user->projects()->first()->id;
 
-        $response = $this->get("/projects/$firstProjectId");
+        $response = $this->actingAs($user)->get("/projects/$firstProjectId");
 
-        $response->assertSuccessful();
+        $response->assertInertia(fn(Assert $page) => $page
+            ->has("project")
+        );
     }
 }

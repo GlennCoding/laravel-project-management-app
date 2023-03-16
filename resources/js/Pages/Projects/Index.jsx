@@ -1,7 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import {Head, useForm} from '@inertiajs/react';
+import {Head, Link, useForm} from '@inertiajs/react';
 import InputError from "@/Components/InputError";
 import PrimaryButton from "@/Components/PrimaryButton";
+import DangerButton from "@/Components/DangerButton";
 
 export default function Index({auth, projects}) {
     const {data, setData, errors, processing, post, reset} = useForm({title: "", description: ""});
@@ -25,6 +26,7 @@ export default function Index({auth, projects}) {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    value={data.title}
                                     type="text"
                                     name="title"
                                     id="title"
@@ -58,14 +60,15 @@ export default function Index({auth, projects}) {
 
                 <div className="mt-6 space-y-2">
                     {projects.map((project, i) =>
-                        <div key={i} className="bg-white shadow-sm rounded-lg p-4">
+                        <Link href={`/projects/${project.id}`} key={i} as="a"
+                              className="bg-white shadow-sm rounded-lg p-4 w-full block hover:bg-gray-50">
                             <h1 className="text-xl font-semibold">
                                 {project.title}
                             </h1>
                             <p>
                                 {project.description}
                             </p>
-                        </div>
+                        </Link>
                     )}
                 </div>
             </div>
