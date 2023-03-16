@@ -47,7 +47,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        return Inertia::render('Projects/Index', ['projects' => [$project]]);
     }
 
     /**
@@ -63,7 +63,14 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+        ]);
+
+        $project->update($validated);
+
+        return redirect(route('projects.index'));
     }
 
     /**
@@ -71,6 +78,8 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+
+        return redirect(route('projects.index'));
     }
 }
