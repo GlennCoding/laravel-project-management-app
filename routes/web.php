@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,6 +39,10 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('projects', ProjectController::class)
     ->only(['index', 'store', 'show', 'edit', 'update', 'destroy'])
+    ->middleware(['auth', 'verified']);
+
+Route::resource('tasks', TaskController::class)
+    ->only(['store', 'destroy', 'update'])
     ->middleware(['auth', 'verified']);
 
 require __DIR__ . '/auth.php';

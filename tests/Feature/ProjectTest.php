@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Inertia\Testing\Assert;
 use Tests\TestCase;
 
-class ProjectsTest extends TestCase
+class ProjectTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
@@ -106,4 +106,5 @@ class ProjectsTest extends TestCase
             ->has("project")
         );
     }
+
 }

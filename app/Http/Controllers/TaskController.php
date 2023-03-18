@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Task;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+class TaskController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'projectId' => 'required|integer',
+            'task.title' => 'required|string|max:255',
+            'task.dueDate' => 'date',
+        ]);
+
+        $project = $request->user()->projects()->find($validated['projectId']);
+
+        $project->tasks()->create($validated['task']);
+
+        return redirect(route('projects.show', $project));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Task $task)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Task $task)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'title' => 'string|max:255',
+            'dueDate' => 'date',
+            'isDone' => 'boolean',
+        ]);
+
+        $task->update($validated);
+
+        return redirect("/project/$task->project_id");
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Task $task)
+    {
+        $task->delete();
+
+        return redirect("/project/$task->project_id");
+    }
+}

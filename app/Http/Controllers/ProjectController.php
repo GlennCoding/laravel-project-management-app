@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\In;
@@ -27,8 +28,8 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:600',
         ]);
 
         $project = $request->user()->projects()->create($validated);
@@ -66,8 +67,8 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project): RedirectResponse
     {
         $validated = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
+            'title' => 'string|max:255',
+            'description' => 'string|max:600',
         ]);
 
         $project->update($validated);
