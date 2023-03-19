@@ -31,6 +31,16 @@ class TaskTest extends TestCase
         $response->assertRedirect();
 
         $this->assertDatabaseHas('tasks', $attributes);
+
+        $attributes2 = [
+            'title' => $this->faker->sentence,
+        ];
+
+        $response2 = $this->actingAs($user)->post('/tasks', ['projectId' => $firstProjectId, 'task' => $attributes2]);
+
+        $response2->assertRedirect();
+
+        $this->assertDatabaseHas('tasks', $attributes2);
     }
 
     public function test_a_user_can_delete_todos(): void

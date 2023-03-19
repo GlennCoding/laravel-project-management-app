@@ -25,7 +25,7 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -50,7 +50,9 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return Inertia::render('Projects/Project', ['project' => $project]);
+        $tasks = $project->tasks()->get();
+
+        return Inertia::render('Projects/Project', ['project' => $project, 'tasks' => $tasks]);
     }
 
     /**

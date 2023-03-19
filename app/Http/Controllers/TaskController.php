@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -19,7 +20,7 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'projectId' => 'required|integer',
@@ -27,11 +28,17 @@ class TaskController extends Controller
             'task.dueDate' => 'date',
         ]);
 
+        $attributes = [
+            'title' => $validated['task']['title'],
+            'dueDate' => $validated['task']['dueDate'] ?? null,
+            'isDone' => false,
+        ];
+
         $project = $request->user()->projects()->find($validated['projectId']);
 
-        $project->tasks()->create($validated['task']);
+        $project->tasks()->create($attributes);
 
-        return redirect(route('projects.show', $project));
+        return redirect("/projects/$project->id");
     }
 
     /**
@@ -71,7 +78,7 @@ class TaskController extends Controller
 
         $task->update($validated);
 
-        return redirect("/project/$task->project_id");
+        return redirect("/projects/$task->project_id");
     }
 
     /**
@@ -81,6 +88,6 @@ class TaskController extends Controller
     {
         $task->delete();
 
-        return redirect("/project/$task->project_id");
+        return redirect("/projects/$task->project_id");
     }
 }
