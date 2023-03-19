@@ -14,6 +14,10 @@ class Task extends Model
         'title', 'dueDate', 'isDone'
     ];
 
+    protected $casts = [
+        'isDone' => 'boolean'
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(Project::class);
