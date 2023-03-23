@@ -24,4 +24,9 @@ class Project extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

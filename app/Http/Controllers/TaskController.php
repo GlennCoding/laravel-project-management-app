@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TaskUpdated;
 use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -77,6 +78,8 @@ class TaskController extends Controller
         ]);
 
         $task->update($validated);
+
+        event(new TaskUpdated($task, $request->user()));
 
         return redirect("/projects/$task->project_id");
     }
