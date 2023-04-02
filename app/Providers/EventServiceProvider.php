@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\TaskOverdue;
 use App\Events\TaskUpdated;
-use App\Listeners\CreateNotificationOnTodoCompleted;
+use App\Listeners\CreateNotificationOnTaskCompleted;
+use App\Listeners\CreateNotificationOnTaskOverdue;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -21,7 +23,10 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         TaskUpdated::class => [
-            CreateNotificationOnTodoCompleted::class
+            CreateNotificationOnTaskCompleted::class
+        ],
+        TaskOverdue::class => [
+            CreateNotificationOnTaskOverdue::class
         ]
     ];
 

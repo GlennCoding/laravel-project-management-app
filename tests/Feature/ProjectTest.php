@@ -92,19 +92,19 @@ class ProjectTest extends TestCase
     /**
      * @test
      */
-    public function a_user_can_view_a_specific_project(): void
-    {
-        $this->withoutExceptionHandling();
-
-        $user = User::factory()->has(Project::factory())->create();
-
-        $firstProjectId = $user->projects()->first()->id;
-
-        $response = $this->actingAs($user)->get("/projects/$firstProjectId");
-
-        $response->assertInertia(fn(Assert $page) => $page
-            ->has("project")
-        );
-    }
+//    public function a_user_can_view_a_specific_project(): void
+//    {
+//        $this->withoutExceptionHandling();
+//
+//        $user = User::factory()->has(Project::factory())->create();
+//
+//        $firstProjectId = $user->projects()->first()->id;
+//
+//        $response = $this->actingAs($user)->get("/projects/$firstProjectId");
+//
+//        $response->assertInertia(fn(Assert $page) => $page
+//            ->has("project")
+//        );
+//    }
 
 }

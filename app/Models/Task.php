@@ -12,12 +12,18 @@ class Task extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'dueDate', 'isDone'
+        'title', 'dueDate', 'isDone', 'user_id', 'project_id'
     ];
 
     protected $casts = [
         'isDone' => 'boolean'
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
 
     public function project(): BelongsTo
     {

@@ -8,7 +8,7 @@ use App\Models\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class CreateNotificationOnTodoCompleted
+class CreateNotificationOnTaskCompleted
 {
     /**
      * Create the event listener.
@@ -26,8 +26,8 @@ class CreateNotificationOnTodoCompleted
         if (!$event->task->isDone) return;
 
         $notification = new Notification([
-            'type' => NotificationTypeEnum::TASK_COMPLETE,
-            'user_id' => $event->user->id,
+            'type' => NotificationTypeEnum::TASK_COMPLETED,
+            'user_id' => $event->task->user_id,
             'task_id' => $event->task->id,
         ]);
 

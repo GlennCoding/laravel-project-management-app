@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class TaskFactory extends Factory
     {
         return [
             'project_id' => Project::factory(),
+            'user_id' => User::factory(),
             'title' => fake()->title(),
             'dueDate' => fake()->optional(0.5)->date(),
             'isDone' => fake()->boolean,

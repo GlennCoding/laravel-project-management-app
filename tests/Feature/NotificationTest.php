@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Events\TaskUpdated;
+use App\Jobs\CheckOverdueTasks;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
@@ -18,12 +19,13 @@ class NotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $user = User::factory()->has(Project::factory()->has(Task::factory()))->create();
+        $task = Task::factory(['isDone' => true]);
+        $user = User::factory()->has(Project::factory()->has($task))->create();
 
         $firstProject = $user->projects()->first();
         $firstTask = $firstProject->tasks()->first();
 
-        event(new TaskUpdated($firstTask, $user));
+        event(new TaskUpdated($firstTask));
 
         $this->assertDatabaseHas('notifications', ['task_id' => $firstTask->id]);
     }
@@ -32,7 +34,8 @@ class NotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $user = User::factory()->has(Project::factory()->has(Task::factory(['isDone' => false])))->create();
+        $task = Task::factory(['isDone' => false]);
+        $user = User::factory()->has(Project::factory()->has($task))->create();
 
         $firstProject = $user->projects()->first();
         $firstTask = $firstProject->tasks()->first();
@@ -46,5 +49,33 @@ class NotificationTest extends TestCase
         $response->assertRedirect();
 
         $this->assertDatabaseHas('notifications', ['task_id' => $firstTask->id]);
+    }
+
+    public function test_saves_a_notification_on_task_forgotten_event(): void
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+        $project = Project::factory()->create(['user_id' => $user->id]);
+        $task = Task::factory()->create(['isDone' => false, 'user_id' => $user->id, 'project_id' => $project->id, 'dueDate' => date('Y-m-d', strtotime('-1 day'))]);
+
+        $job = new CheckOverdueTasks;
+        $job->handle();
+
+        $this->assertDatabaseHas('notifications', ['task_id' => $task->id]);
+    }
+
+    public function test_saves_a_notification_on_task_streak_event(): void
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+        $project = Project::factory()->create(['user_id' => $user->id]);
+        $tasks = Task::factory(5)->create([
+            'user_id' => $user->id,
+            'project_id' => $project->id,
+        ]);
+
+        $this->assertDatabaseHas('notifications', ['task_id' => $tasks->id]);
     }
 }

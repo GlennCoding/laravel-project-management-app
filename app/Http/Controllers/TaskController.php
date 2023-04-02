@@ -33,6 +33,7 @@ class TaskController extends Controller
             'title' => $validated['task']['title'],
             'dueDate' => $validated['task']['dueDate'] ?? null,
             'isDone' => false,
+            'user_id' => $request->user()->id,
         ];
 
         $project = $request->user()->projects()->find($validated['projectId']);
