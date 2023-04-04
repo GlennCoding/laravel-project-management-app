@@ -134,7 +134,7 @@ export default function Authenticated({auth, header, children}) {
                     </main>
                 </div>
 
-                <div className="hidden lg:flex w-72 flex-col bg-white p-8">
+                <div className="hidden z-10 right-0 w-72 min-h-screen lg:flex">
                     <NotificationsBar/>
                 </div>
             </div>

@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->timestamps();
             $table->string('type');
+            $table->string('message');
             $table->foreignId('project_id')->nullable(true)->constrained('projects')->cascadeOnDelete();
             $table->foreignId('user_id')->nullable(true)->constrained('users')->cascadeOnDelete();
             $table->foreignId('task_id')->nullable(true)->constrained('tasks')->cascadeOnDelete();

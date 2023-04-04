@@ -36,6 +36,7 @@ class CreateNotificationOnTaskStreak
             'type' => NotificationTypeEnum::TASK_STREAK,
             'user_id' => $event->task->user_id,
             'task_id' => $event->task->id,
+            'message' => "Joooo you got a {$completedTaskCountForToday} streak!!"
         ]);
 
         $notification->save();

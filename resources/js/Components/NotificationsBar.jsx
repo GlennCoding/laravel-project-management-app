@@ -3,22 +3,31 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 
 export default function NotificationsBar() {
-    const [notifications, setNotifications] = useState();
+    const {notifications} = usePage().props
 
-    useEffect(() => {
-        fetchTasks();
-    }, [])
-
-    const fetchTasks = async () => {
-        try {
-            const response = await axios.get('/notifications');
-            setNotifications(response.data);
-        } catch (error) {
-            console.error('Error fetching tasks:', error);
+    const getEmoji = (type) => {
+        switch (type) {
+            case "TASK_COMPLETED":
+                return "💪";
+            case "TASK_OVERDUE":
+                return "🖕";
+            case "TASK_STREAK":
+                return "🏆"
+            default:
+                return;
         }
-    };
+    }
 
-    console.log(notifications)
-
-    return null;
+    return (
+        <div className="bg-white w-full p-8">
+            <ul className="space-y-2">
+                {notifications && notifications.map((notification, i) => (
+                    <li>
+                        <span className="mr-1">{getEmoji(notification.type)}</span>
+                        <span key={i}>{notification.message}</span>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 };
