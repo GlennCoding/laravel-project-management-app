@@ -37,8 +37,6 @@ function Project({auth, project, tasks}) {
         router.delete(`/projects/${project.id}`)
     }
 
-    console.log(tasks)
-
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title={project.title}/>

@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->timestamps();
             $table->string('title');
             $table->date('dueDate')->nullable();
+            $table->date('completedAt')->nullable();
             $table->boolean('isDone');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();

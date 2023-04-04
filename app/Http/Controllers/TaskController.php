@@ -78,9 +78,9 @@ class TaskController extends Controller
             'isDone' => 'boolean',
         ]);
 
-        $task->update($validated);
+        $completedAt = $validated['isDone'] ? now() : null;
 
-        event(new TaskUpdated($task, $request->user()));
+        $task->update([...$validated, 'completedAt' => $completedAt]);
 
         return redirect("/projects/$task->project_id");
     }

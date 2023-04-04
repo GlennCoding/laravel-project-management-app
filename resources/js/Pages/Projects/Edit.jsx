@@ -10,8 +10,6 @@ function Edit({auth, project}) {
         description: project.description
     });
 
-    console.log(data)
-
     const submit = (e) => {
         e.preventDefault();
         put(route(`projects.update`, {project}), {onSuccess: () => reset()});

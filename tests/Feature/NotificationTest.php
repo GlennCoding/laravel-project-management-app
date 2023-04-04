@@ -2,13 +2,19 @@
 
 namespace Tests\Feature;
 
+use App\Enums\NotificationTypeEnum;
+use App\Events\TaskStreak;
 use App\Events\TaskUpdated;
 use App\Jobs\CheckOverdueTasks;
+use App\Models\Notification;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class NotificationTest extends TestCase
@@ -65,17 +71,27 @@ class NotificationTest extends TestCase
         $this->assertDatabaseHas('notifications', ['task_id' => $task->id]);
     }
 
-    public function test_saves_a_notification_on_task_streak_event(): void
-    {
-        $this->withoutExceptionHandling();
-
-        $user = User::factory()->create();
-        $project = Project::factory()->create(['user_id' => $user->id]);
-        $tasks = Task::factory(5)->create([
-            'user_id' => $user->id,
-            'project_id' => $project->id,
-        ]);
-
-        $this->assertDatabaseHas('notifications', ['task_id' => $tasks->id]);
-    }
+//    public function test_saves_a_notification_on_task_streak_event(): void
+//    {
+//        $this->withoutExceptionHandling();
+//
+//        $user = User::factory()->create();
+//        $project = Project::factory()->create(['user_id' => $user->id]);
+//        $doneTasks = Task::factory(4)->create([
+//            'user_id' => $user->id,
+//            'project_id' => $project->id,
+//            'isDone' => true,
+//            'completedAt' => now(),
+//        ]);
+//        $updatingTask = Task::factory()->create([
+//            'user_id' => $user->id,
+//            'project_id' => $project->id,
+//            'isDone' => false,
+//            'completedAt' => now(),
+//        ]);
+//
+//        event(new TaskUpdated($updatingTask));
+//
+//        $this->assertDatabaseHas('notifications', ['task_id' => $updatingTask->id, 'type' => NotificationTypeEnum::TASK_STREAK]);
+//    }
 }

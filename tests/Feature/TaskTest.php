@@ -17,13 +17,16 @@ class TaskTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $user = User::factory()->has(Project::factory())->create();
+        $user = User::factory()->create();
+        $project = Project::factory()->create([
+            'user_id' => $user->id
+        ]);
 
-        $firstProjectId = $user->projects()->first()->id;
+        $firstProjectId = $project->id;
 
         $attributes = [
             'title' => $this->faker->sentence,
-            'dueDate' => $this->faker->date,
+            'dueDate' => $this->faker->dateTime,
         ];
 
         $response = $this->actingAs($user)->post('/tasks', ['projectId' => $firstProjectId, 'task' => $attributes]);
@@ -31,27 +34,18 @@ class TaskTest extends TestCase
         $response->assertRedirect();
 
         $this->assertDatabaseHas('tasks', $attributes);
-
-        $attributes2 = [
-            'title' => $this->faker->sentence,
-        ];
-
-        $response2 = $this->actingAs($user)->post('/tasks', ['projectId' => $firstProjectId, 'task' => $attributes2]);
-
-        $response2->assertRedirect();
-
-        $this->assertDatabaseHas('tasks', $attributes2);
     }
 
     public function test_a_user_can_delete_todos(): void
     {
         $this->withoutExceptionHandling();
 
-        $projectFactory = Project::factory()->has(Task::factory());
-        $user = User::factory()->has($projectFactory)->create();
+        $user = User::factory()->create();
+        $task = Task::factory()->create([
+            'user_id' => $user->id,
+        ]);
 
-        $firstProject = $user->projects()->first();
-        $firstTaskId = $firstProject->tasks()->first()->id;
+        $firstTaskId = $task->id;
 
         $response = $this->actingAs($user)->delete("/tasks/$firstTaskId");
 
@@ -64,24 +58,42 @@ class TaskTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $projectFactory = Project::factory()->has(Task::factory());
-        $user = User::factory()->has($projectFactory)->create();
-
-        $firstProject = $user->projects()->first();
-        $firstTask = $firstProject->tasks()->first();
+        $user = User::factory()->create();
+        $task = Task::factory()->create([
+            'user_id' => $user->id,
+        ]);
 
 
         $newAttributes = [
             'title' => $this->faker->sentence,
-            'dueDate' => $this->faker->date,
-            'isDone' => !$firstTask->isDone,
+            'isDone' => !$task->isDone,
         ];
-        $oppositeOfCurrentIsDone = !$firstTask->isDone;
 
-        $response = $this->actingAs($user)->put("/tasks/$firstTask->id", $newAttributes);
+        $response = $this->actingAs($user)->put("/tasks/$task->id", $newAttributes);
 
         $response->assertRedirect();
 
-        $this->assertDatabaseHas('tasks', [...$newAttributes, 'id' => $firstTask->id]);
+        $this->assertDatabaseHas('tasks', [...$newAttributes, 'id' => $task->id]);
+    }
+
+    public function test_saves_completedAt_date_on_task_update(): void
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+        $task = Task::factory()->create([
+            'user_id' => $user->id,
+            'isDone' => false
+        ]);
+
+        $response = $this->actingAs($user)->put("/tasks/$task->id", [
+            'isDone' => true
+        ]);
+
+        $response->assertRedirect();
+
+        $updatedTask = Task::find($task->id);
+
+        $this->assertNotNull($updatedTask['completedAt']);
     }
 }

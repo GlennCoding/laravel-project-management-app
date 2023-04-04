@@ -4,6 +4,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
+use App\Models\Notification;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -45,5 +46,9 @@ Route::resource('projects', ProjectController::class)
 Route::resource('tasks', TaskController::class)
     ->only(['store', 'destroy', 'update'])
     ->middleware(['auth', 'verified']);
+
+Route::resource('notifications', NotificationController::class)
+    ->only(['index'])
+    ->middleware(['auth']);
 
 require __DIR__ . '/auth.php';

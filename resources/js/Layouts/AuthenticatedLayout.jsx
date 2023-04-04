@@ -4,12 +4,13 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import {Link} from '@inertiajs/react';
+import NotificationsBar from "@/Components/NotificationsBar";
 
 export default function Authenticated({auth, header, children}) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 flex-col">
             <nav className="bg-white border-b border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
@@ -124,7 +125,19 @@ export default function Authenticated({auth, header, children}) {
                 </header>
             )}
 
-            <main>{children}</main>
+
+            <div className="flex flex-1 h-full">
+                {/* Static sidebar for desktop */}
+                <div className="flex-1">
+                    <main className="py-10">
+                        <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+                    </main>
+                </div>
+
+                <div className="hidden lg:flex w-72 flex-col bg-white p-8">
+                    <NotificationsBar/>
+                </div>
+            </div>
         </div>
     );
 }
