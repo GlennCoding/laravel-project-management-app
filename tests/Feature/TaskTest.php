@@ -42,7 +42,7 @@ class TaskTest extends TestCase
 
         $user = User::factory()->create();
         $task = Task::factory()->create([
-            'user_id' => $user->id,
+            'assigned_user_id' => $user->id,
         ]);
 
         $firstTaskId = $task->id;
@@ -60,7 +60,7 @@ class TaskTest extends TestCase
 
         $user = User::factory()->create();
         $task = Task::factory()->create([
-            'user_id' => $user->id,
+            'assigned_user_id' => $user->id,
         ]);
 
 
@@ -82,7 +82,7 @@ class TaskTest extends TestCase
 
         $user = User::factory()->create();
         $task = Task::factory()->create([
-            'user_id' => $user->id,
+            'assigned_user_id' => $user->id,
             'isDone' => false
         ]);
 

@@ -21,7 +21,7 @@ class TaskFactory extends Factory
     {
         return [
             'project_id' => Project::factory(),
-            'user_id' => User::factory(),
+            'assigned_user_id' => User::factory(),
             'title' => fake()->title(),
             'dueDate' => fake()->optional(0.5)->dateTime(),
             'isDone' => fake()->boolean,

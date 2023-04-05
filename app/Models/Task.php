@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Task extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title', 'dueDate', 'isDone', 'completedAt', 'user_id', 'project_id'
+        'title', 'dueDate', 'isDone', 'completedAt', 'assigned_user_id', 'project_id'
     ];
 
     protected $casts = [
@@ -26,9 +27,9 @@ class Task extends Model
         'updated' => TaskUpdated::class,
     ];
 
-    public function user(): BelongsTo
+    public function assignedUser(): HasOneThrough
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOneThrough(User::class, Project::class);
     }
 
     public function project(): BelongsTo

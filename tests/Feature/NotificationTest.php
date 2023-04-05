@@ -2,19 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Enums\NotificationTypeEnum;
-use App\Events\TaskStreak;
 use App\Events\TaskUpdated;
 use App\Jobs\CheckOverdueTasks;
-use App\Models\Notification;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class NotificationTest extends TestCase
@@ -63,7 +57,7 @@ class NotificationTest extends TestCase
 
         $user = User::factory()->create();
         $project = Project::factory()->create(['user_id' => $user->id]);
-        $task = Task::factory()->create(['isDone' => false, 'user_id' => $user->id, 'project_id' => $project->id, 'dueDate' => date('Y-m-d', strtotime('-1 day'))]);
+        $task = Task::factory()->create(['isDone' => false, 'assigned_user_id' => $user->id, 'project_id' => $project->id, 'dueDate' => date('Y-m-d', strtotime('-1 day'))]);
 
         $job = new CheckOverdueTasks;
         $job->handle();
