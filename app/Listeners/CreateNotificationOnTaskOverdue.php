@@ -30,7 +30,7 @@ class CreateNotificationOnTaskOverdue
         if (!$dueDate->isBefore($now)) return;
 
         $notification = new Notification([
-            'type' => NotificationTypeEnum::TASK_COMPLETED,
+            'type' => NotificationTypeEnum::TASK_OVERDUE,
             'user_id' => $event->task->user_id,
             'task_id' => $event->task->id,
             'message' => "Bruh, you forgot *{$event->task->title}*"

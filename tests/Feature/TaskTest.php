@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserProjectRoleEnum;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
@@ -13,14 +14,13 @@ class TaskTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
-    public function test_a_user_can_create_todos(): void
+    public function test_a_user_can_create_tasks(): void
     {
         $this->withoutExceptionHandling();
 
         $user = User::factory()->create();
-        $project = Project::factory()->create([
-            'user_id' => $user->id
-        ]);
+        $project = Project::factory()->create();
+        $user->projects()->attach($project->id, ['role' => UserProjectRoleEnum::OWNER]);
 
         $firstProjectId = $project->id;
 
@@ -36,7 +36,7 @@ class TaskTest extends TestCase
         $this->assertDatabaseHas('tasks', $attributes);
     }
 
-    public function test_a_user_can_delete_todos(): void
+    public function test_a_user_can_delete_tasks(): void
     {
         $this->withoutExceptionHandling();
 
@@ -54,7 +54,7 @@ class TaskTest extends TestCase
         $this->assertDatabaseMissing('tasks', ['id' => $firstTaskId]);
     }
 
-    public function test_a_user_can_update_todos(): void
+    public function test_a_user_can_update_tasks(): void
     {
         $this->withoutExceptionHandling();
 

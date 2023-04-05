@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserProjectRoleEnum;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -42,7 +43,9 @@ class ProjectTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $user = User::factory()->has(Project::factory()->count(5))->create();
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+        $user->projects()->attach($project->id, ['role' => UserProjectRoleEnum::OWNER]);
 
         $this->actingAs($user)->get('/projects')->assertSuccessful();
     }
@@ -53,7 +56,9 @@ class ProjectTest extends TestCase
     public function a_user_can_edit_projects(): void
     {
         $this->withoutExceptionHandling();
-        $user = User::factory()->has(Project::factory())->create();
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+        $user->projects()->attach($project->id, ['role' => UserProjectRoleEnum::OWNER]);
 
         $firstProjectId = $user->projects()->first()->id;
 
@@ -78,7 +83,9 @@ class ProjectTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $user = User::factory()->has(Project::factory())->create();
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+        $user->projects()->attach($project->id, ['role' => UserProjectRoleEnum::OWNER]);
 
         $firstProjectId = $user->projects()->first()->id;
 

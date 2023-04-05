@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserProjectRoleEnum;
 use App\Events\TaskUpdated;
 use App\Jobs\CheckOverdueTasks;
 use App\Models\Project;
@@ -19,36 +20,29 @@ class NotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $task = Task::factory(['isDone' => true]);
-        $user = User::factory()->has(Project::factory()->has($task))->create();
+        $task = Task::factory()->create(['isDone' => true]);
 
-        $firstProject = $user->projects()->first();
-        $firstTask = $firstProject->tasks()->first();
+        event(new TaskUpdated($task));
 
-        event(new TaskUpdated($firstTask));
-
-        $this->assertDatabaseHas('notifications', ['task_id' => $firstTask->id]);
+        $this->assertDatabaseHas('notifications', ['task_id' => $task->id]);
     }
 
     public function test_saves_a_notification_on_task_completion(): void
     {
         $this->withoutExceptionHandling();
 
-        $task = Task::factory(['isDone' => false]);
-        $user = User::factory()->has(Project::factory()->has($task))->create();
-
-        $firstProject = $user->projects()->first();
-        $firstTask = $firstProject->tasks()->first();
+        $user = User::factory()->create();
+        $task = Task::factory(['isDone' => false, 'assigned_user_id' => $user->id])->create();
 
         $newAttributes = [
             'isDone' => true,
         ];
 
-        $response = $this->actingAs($user)->put("/tasks/$firstTask->id", $newAttributes);
+        $response = $this->actingAs($user)->put("/tasks/$task->id", $newAttributes);
 
         $response->assertRedirect();
 
-        $this->assertDatabaseHas('notifications', ['task_id' => $firstTask->id]);
+        $this->assertDatabaseHas('notifications', ['task_id' => $task->id]);
     }
 
     public function test_saves_a_notification_on_task_forgotten_event(): void
@@ -56,8 +50,7 @@ class NotificationTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = User::factory()->create();
-        $project = Project::factory()->create(['user_id' => $user->id]);
-        $task = Task::factory()->create(['isDone' => false, 'assigned_user_id' => $user->id, 'project_id' => $project->id, 'dueDate' => date('Y-m-d', strtotime('-1 day'))]);
+        $task = Task::factory(['isDone' => false, 'assigned_user_id' => $user->id, 'dueDate' => date('Y-m-d', strtotime('-1 day'))])->create();
 
         $job = new CheckOverdueTasks;
         $job->handle();

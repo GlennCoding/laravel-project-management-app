@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserProjectRoleEnum;
 use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
@@ -15,9 +16,9 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $projects = Project::with('user:id,name')->latest()->get();
+        $projects = $request->user()->projects()->latest()->get();
 
         return Inertia::render('Projects/Index', ['projects' => $projects]);
     }
@@ -32,7 +33,7 @@ class ProjectController extends Controller
             'description' => 'required|string|max:600',
         ]);
 
-        $project = $request->user()->projects()->create($validated);
+        Project::create($validated)->users()->attach($request->user()->id, ['role' => UserProjectRoleEnum::OWNER]);
 
         return redirect(route('projects.index'));
     }
