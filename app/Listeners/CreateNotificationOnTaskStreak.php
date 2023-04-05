@@ -30,6 +30,7 @@ class CreateNotificationOnTaskStreak
 
         $completedTaskCountForToday = Task::where('user_id', $task->user_id)->whereDate('completedAt', Carbon::today())->count();
 
+        if ($completedTaskCountForToday === 0) return;
         if ($completedTaskCountForToday % 5 != 0) return;
 
         $notification = new Notification([
