@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserProjectRoleEnum;
 use App\Models\Project;
-use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\In;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,7 +30,7 @@ class ProjectController extends Controller
             'description' => 'required|string|max:600',
         ]);
 
-        Project::create($validated)->users()->attach($request->user()->id, ['role' => UserProjectRoleEnum::OWNER]);
+        $request->user()->projects()->create($validated);
 
         return redirect(route('projects.index'));
     }
@@ -51,6 +48,8 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $this->authorize('update', $project);
+
         $tasks = $project->tasks()->get();
 
         return Inertia::render('Projects/Project', ['project' => $project, 'tasks' => $tasks]);
@@ -69,6 +68,8 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project): RedirectResponse
     {
+        $this->authorize('update', $project);
+
         $validated = $request->validate([
             'title' => 'string|max:255',
             'description' => 'string|max:600',
@@ -84,6 +85,8 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        $this->authorize('manage', $project);
+
         $project->delete();
 
         return redirect(route('projects.index'));

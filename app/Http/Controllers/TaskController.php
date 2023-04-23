@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\TaskUpdated;
+use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,87 +12,56 @@ use Illuminate\Support\Facades\Log;
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Project $project, Request $request): RedirectResponse
     {
+        $this->authorize('update', $project);
+
         $validated = $request->validate([
-            'projectId' => 'required|integer',
-            'task.title' => 'required|string|max:255',
-            'task.dueDate' => 'date',
+            'body' => 'required|string|max:255',
+            'dueDate' => 'date',
         ]);
 
-        $attributes = [
-            'title' => $validated['task']['title'],
-            'dueDate' => $validated['task']['dueDate'] ?? null,
-            'isDone' => false,
-            'assigned_user_id' => $request->user()->id,
-        ];
+        $project->addTask($validated['body'], $validated['dueDate'] ?? null,);
 
-        $project = $request->user()->projects()->find($validated['projectId']);
-
-        $project->tasks()->create($attributes);
-
-        return redirect("/projects/$project->id");
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Task $task)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Task $task)
-    {
-        //
+        return redirect($project->path());
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $task)
+    public function update(Project $project, Task $task)
     {
-        $validated = $request->validate([
-            'title' => 'string|max:255',
+        $this->authorize('update', $task->project);
+
+        $validatedData = request()->validate([
+            'body' => 'string|max:255',
             'dueDate' => 'date',
             'isDone' => 'boolean',
         ]);
 
-        $completedAt = $validated['isDone'] ? now() : null;
+        if (array_key_exists('isDone', $validatedData)) {
+            $validatedData['isDone'] ? $task->complete() : $task->incomplete();
 
-        $task->update([...$validated, 'completedAt' => $completedAt]);
+            unset($validatedData['isDone']);
+        }
 
-        return redirect("/projects/$task->project_id");
+        $task->update($validatedData);
+
+        return redirect($project->path());
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(Project $project, Task $task)
     {
+        $this->authorize('update', $task->project);
+
         $task->delete();
 
-        return redirect("/projects/$task->project_id");
+        return redirect($project->path());
     }
 }

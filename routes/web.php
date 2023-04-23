@@ -1,10 +1,9 @@
 <?php
 
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectInvitationsController;
 use App\Http\Controllers\TaskController;
-use App\Models\Notification;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,16 +38,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('projects', ProjectController::class)
-    ->only(['index', 'store', 'show', 'edit', 'update', 'destroy'])
-    ->middleware(['auth', 'verified']);
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::resource('projects', ProjectController::class);
 
-Route::resource('tasks', TaskController::class)
-    ->only(['store', 'destroy', 'update'])
-    ->middleware(['auth', 'verified']);
+    Route::post('/projects/{project}/tasks', [TaskController::class, 'store'])->name('task.store');
+    Route::patch('/projects/{project}/tasks/{task}', [TaskController::class, 'update'])->name('task.update');
+    Route::delete('/projects/{project}/tasks/{task}', [TaskController::class, 'destroy'])->name('task.destroy');
 
-Route::resource('notifications', NotificationController::class)
-    ->only(['index'])
-    ->middleware(['auth']);
+    Route::post('/projects/{project}/invite', [ProjectInvitationsController::class, 'invite'])->name('project.invite');
+    Route::post('/projects/{project}/leave', [ProjectInvitationsController::class, 'leave'])->name('project.leave');
+});
 
 require __DIR__ . '/auth.php';

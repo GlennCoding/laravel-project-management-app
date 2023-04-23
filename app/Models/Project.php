@@ -12,15 +12,20 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title', 'description'
-    ];
+    protected $guarded = [];
 
-    public function users(): BelongsToMany
+    public function path()
     {
-        return $this->belongsToMany(User::class, 'project_user')
-            ->withPivot('role')
-            ->withTimestamps();
+        return "/projects/{$this->id}";
+    }
+
+    public function addTask($body, $dueDate)
+    {
+        return $this->tasks()->create([
+            'body' => $body,
+            'dueDate' => $dueDate,
+            'assigned_user_id' => $this->owner_id
+        ]);
     }
 
     public function tasks(): HasMany
@@ -28,8 +33,29 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function invite(User $member)
+    {
+        $this->members()->attach($member);
+    }
+
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'project_member')
+            ->withTimestamps();
+    }
+
+    public function leave(User $member)
+    {
+        $this->members()->detach($member);
     }
 }

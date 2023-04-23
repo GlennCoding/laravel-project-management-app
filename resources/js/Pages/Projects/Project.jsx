@@ -12,19 +12,16 @@ function Project({auth, project, tasks}) {
     const handleSubmitNewTask = (e) => {
         e.preventDefault();
         transform(formData => ({
-            projectId: project.id,
-            task: {
-                title: formData.title,
-                dueDate: formData.dueDate ? formData.dueDate : undefined,
-            },
+            body: formData.title || undefined,
+            dueDate: formData.dueDate || undefined,
         }));
-        post(route("tasks.store"), {
+        post(`/projects/${project.id}/tasks`, {
             onSuccess: () => reset(),
         });
     };
 
     const handleToggleTaskIsDone = (task) => {
-        router.put(`/tasks/${task.id}`, {
+        router.patch(`/projects/${project.id}/tasks/${task.id}`, {
             isDone: !task.isDone
         })
     };
@@ -98,7 +95,7 @@ function Project({auth, project, tasks}) {
                              onClick={() => handleToggleTaskIsDone(task)}>
                             <div className="min-w-0 flex-1 text-sm leading-6">
                                 <label htmlFor={`task-${task.id}`} className="select-none font-medium text-gray-900">
-                                    {task.title}
+                                    {task.body}
                                 </label>
                                 <p>
                                     {task.dueDate && new Date(task.dueDate).toISOString().slice(0, 10).replace(/-/g, "-")}

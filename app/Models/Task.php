@@ -13,9 +13,10 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title', 'dueDate', 'isDone', 'completedAt', 'assigned_user_id', 'project_id'
-    ];
+    protected $guarded = [];
+
+    protected $touches = ['project'];
+
 
     protected $casts = [
         'isDone' => 'boolean',
@@ -26,6 +27,16 @@ class Task extends Model
     protected $dispatchesEvents = [
         'updated' => TaskUpdated::class,
     ];
+
+    public function complete()
+    {
+        $this->update(['isDone' => true, 'completedAt' => now()]);
+    }
+
+    public function incomplete()
+    {
+        $this->update(['isDone' => false, 'completedAt' => null]);
+    }
 
     public function assignedUser(): HasOneThrough
     {
@@ -40,5 +51,10 @@ class Task extends Model
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function path()
+    {
+        return "/projects/{$this->project->id}/tasks/{$this->id}";
     }
 }

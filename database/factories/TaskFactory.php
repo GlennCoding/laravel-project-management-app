@@ -22,9 +22,9 @@ class TaskFactory extends Factory
         return [
             'project_id' => Project::factory(),
             'assigned_user_id' => User::factory(),
-            'title' => fake()->title(),
+            'body' => fake()->title(),
             'dueDate' => fake()->optional(0.5)->dateTime(),
-            'isDone' => fake()->boolean,
+            'isDone' => false,
         ];
     }
 }

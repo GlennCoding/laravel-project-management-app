@@ -44,16 +44,23 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function projects(): BelongsToMany
+    public function projects(): HasMany
     {
-        return $this->belongsToMany(Project::class, 'project_user')
-            ->withPivot('role')
-            ->withTimestamps();
+        return $this->hasMany(Project::class, 'owner_id')->latest('updated_at');
     }
 
-    public function tasks(): HasMany
+    public function assignedTasks(): HasMany
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function accessibleProjects()
+    {
+        return Project::where('owner_id', $this->id)
+            ->orWhereHas('members', function ($query) {
+                $query->where('member_id', $this->id);
+            })
+            ->get();
     }
 
     public function notifications(): HasMany
