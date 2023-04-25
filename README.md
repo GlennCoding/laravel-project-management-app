@@ -1,66 +1,140 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# **🤖 Laravel Productivity App**
 
-## About Laravel
+</div>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+A productivity app that allows users to create projects and tasks, collaborate with others, and track their activity
+history built with PHP, Laravel, Inertia.js and React. See the live version here:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+<br>
 
-## Learning Laravel
+## **🪄 Features**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Users should be able to do the following:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- [x] Create and manage an account within the application
+- [x] Create, update, delete projects
+- [x] View projects in a dashboard
+- [x] Create, update and delete tasks on top of projects
+- [x] Invite other users to projects
+- [x] Assign other project members to tasks
+- [x] Save and show what activity there is in a project
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+  ---
 
-## Laravel Sponsors
+Upcoming features to be implemented:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- [ ] Reorder tasks
+- [ ] Set a status to tasks
 
-### Premium Partners
+<br>
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## **💫 Implementation**
 
-## Contributing
+This application utilizes PHP and Laravel to create a monolithic backend and is hosted on DigitalOcean, which offers a
+reliable and scalable cloud platform that offers high-performance infrastructure. Laravel Forge is employed as a server
+management tool, simplifying the process of deploying, configuring, and maintaining the server environment, thus
+ensuring seamless integration with DigitalOcean. For the frontend, I've combined Inertia.js with React. Inertia.js is a
+framework that enables building single-page applications using classic server-side routing, allowing seamless
+communication between the Laravel backend and the React frontend, without the need for building a separate API.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Tech Stack
 
-## Code of Conduct
+To build this service I used following tech stack:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- PHP
+- Laravel
+- React
+- JavaScript
+- Inertia.js
 
-## Security Vulnerabilities
+<br>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## **🧱 Architecture**
 
-## License
+The following is a visualisation of the archictecture of the application, showing what happends when a user makes a
+request:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<div align="center">
+  <img src="./.github/assets/images/architecture.jpg" width="100%"/>
+</div>
+
+## **🚀 Development Server Setup**
+
+Ensure that your local machine has PHP and Composer installed.
+See [here](https://laravel.com/docs/10.x#your-first-laravel-project) for more information.
+
+Run the following commands to start a development server:
+
+1. Rename .env.example file to .env inside your project root and fill the database information. (windows wont let you do
+   it, so you have to open your console cd your project root directory and run mv .env.example .env )
+2. Open the console and cd your project root directory
+3. Run composer install or php composer.phar install
+4. Run `php artisan migrate` to run DB migrations
+5. Run `php artisan serve` to start the laravel application
+6. Run `npm run dev` in another teminal to start the frontend
+
+You can now visit your project at `http://localhost:8000`.
+
+<br>
+
+## **🧪 Testing & CI Pipelines**
+
+> All test files are defined at `./tests`
+
+Different options are available for testing the server, you can run:
+
+- `php artisan test` to run all tests
+- `php artisan test --filter=TestName `to run a specific test
+
+<br>
+
+## **🗂 API**
+
+> All web routes are defined at `./routes/web.php`
+
+**Manage Project**:
+
+| Verb      | URI                 | Description           | 
+|-----------|---------------------|-----------------------|
+| GET       | /projects           | View your projects    | 
+| POST      | /projects           | Create a project      |
+| GET       | /projects/{project} | View a single project |
+| PUT/PATCH | /projects/{project} | Update a project      |
+| DELETE    | /projects/{project} | Delete a project      |
+
+**Project Tasks**:
+
+| Verb      | URI                              | Description   | 
+|-----------|----------------------------------|---------------|
+| POST      | /projects/tasks                  | Create a task |
+| DELETE    | /projects/{project}/tasks/{task} | Delete a task |
+| PUT/PATCH | /projects/{project}/tasks/{task} | Update a task |
+
+**Project Invitations**:
+
+| Verb | URI                        | Description                      | 
+|------|----------------------------|----------------------------------|
+| POST | /projects/{project}/invite | Invite another user to a project |
+| POST | /projects/{project}/leave  | Leave a project                  |
+
+## **💽 Database Schema model**
+
+The following shows the database schema and relationship between models. View the database schema on an interactive
+playground [here](https://dbdiagram.io/d/6447b7b16b31947051292f18).
+
+<br>
+
+<div align="center">
+
+
+
+<img src=".github/assets/images/database-schema.png" width="100%"/>
+</div>
+
+---
+
+
+<div align="center">🎉 Thanks for reading </div>
