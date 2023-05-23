@@ -23,7 +23,7 @@ class TaskFactory extends Factory
             'project_id' => Project::factory(),
             'assigned_user_id' => User::factory(),
             'body' => fake()->title(),
-            'dueDate' => fake()->optional(0.5)->dateTime(),
+            'dueDate' => fake()->dateTime()->format('D, d M Y H:i:s'),
             'isDone' => false,
         ];
     }

@@ -5,6 +5,8 @@ import {useEffect, useState} from "react";
 export default function NotificationsBar() {
     const {notifications} = usePage().props
 
+    console.log(notifications)
+
     const getEmoji = (type) => {
         switch (type) {
             case "TASK_COMPLETED":

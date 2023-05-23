@@ -27,8 +27,8 @@ class CreateNotificationOnTaskCompleted
 
         $notification = new Notification([
             'type' => NotificationTypeEnum::TASK_COMPLETED,
-            'user_id' => $event->task->user_id,
-            'task_id' => $event->task->id,
+            'user_id' => $event->task->assignedUser->id,
+            'project_id' => $event->task->project->id,
             'message' => "LFG, you completed *{$event->task->title}*"
         ]);
 

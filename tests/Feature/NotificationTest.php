@@ -2,8 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Enums\UserProjectRoleEnum;
-use App\Events\TaskUpdated;
+use App\Enums\NotificationTypeEnum;
 use App\Jobs\CheckOverdueTasks;
 use App\Models\Project;
 use App\Models\Task;
@@ -16,36 +15,22 @@ class NotificationTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
-    public function test_saves_a_notification_on_task_completion_event(): void
+    /** @test */
+    public function saves_a_notification_on_task_completion(): void
     {
         $this->withoutExceptionHandling();
 
-        $task = Task::factory()->create(['isDone' => true]);
+        $task = Task::factory()->create();
 
-        event(new TaskUpdated($task));
-
-        $this->assertDatabaseHas('notifications', ['task_id' => $task->id]);
-    }
-
-    public function test_saves_a_notification_on_task_completion(): void
-    {
-        $this->withoutExceptionHandling();
-
-        $user = User::factory()->create();
-        $task = Task::factory(['isDone' => false, 'assigned_user_id' => $user->id])->create();
-
-        $newAttributes = [
+        $this->actingAs($task->assignedUser)->patch($task->path(), [
             'isDone' => true,
-        ];
+        ]);
 
-        $response = $this->actingAs($user)->put("/tasks/$task->id", $newAttributes);
-
-        $response->assertRedirect();
-
-        $this->assertDatabaseHas('notifications', ['task_id' => $task->id]);
+        $this->assertDatabaseHas('notifications', ['project_id' => $task->project->id, 'user_id' => $task->assignedUser->id, 'type' => NotificationTypeEnum::TASK_COMPLETED]);
     }
 
-    public function test_saves_a_notification_on_task_forgotten_event(): void
+    /** @test */
+    public function saves_a_notification_on_task_forgotten_event(): void
     {
         $this->withoutExceptionHandling();
 
@@ -55,30 +40,21 @@ class NotificationTest extends TestCase
         $job = new CheckOverdueTasks;
         $job->handle();
 
-        $this->assertDatabaseHas('notifications', ['task_id' => $task->id]);
+        $this->assertDatabaseHas('notifications', ['project_id' => $task->project->id, 'user_id' => $task->assignedUser->id, 'type' => NotificationTypeEnum::TASK_OVERDUE]);
     }
 
-//    public function test_saves_a_notification_on_task_streak_event(): void
+    /** @test */
+//    public function saves_a_notification_on_task_streak(): void
 //    {
 //        $this->withoutExceptionHandling();
 //
-//        $user = User::factory()->create();
-//        $project = Project::factory()->create(['user_id' => $user->id]);
-//        $doneTasks = Task::factory(4)->create([
-//            'user_id' => $user->id,
-//            'project_id' => $project->id,
-//            'isDone' => true,
-//            'completedAt' => now(),
-//        ]);
-//        $updatingTask = Task::factory()->create([
-//            'user_id' => $user->id,
-//            'project_id' => $project->id,
-//            'isDone' => false,
-//            'completedAt' => now(),
-//        ]);
+//        $project = Project::factory()->withTasks(5)->create();
 //
-//        event(new TaskUpdated($updatingTask));
+//        foreach ($project->tasks as $task) {
+//            $task->complete();
+//        }
 //
-//        $this->assertDatabaseHas('notifications', ['task_id' => $updatingTask->id, 'type' => NotificationTypeEnum::TASK_STREAK]);
+//        $this->assertDatabaseHas('notifications', ['project_id' => $task->project->id, 'user_id' => $task->project->owner->id, 'type' => NotificationTypeEnum::TASK_STREAK]);
 //    }
+
 }

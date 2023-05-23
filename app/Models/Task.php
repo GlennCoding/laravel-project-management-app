@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Carbon\Carbon;
 
 class Task extends Model
 {
@@ -30,7 +31,7 @@ class Task extends Model
 
     public function complete()
     {
-        $this->update(['isDone' => true, 'completedAt' => now()]);
+        $this->update(['isDone' => true, 'completedAt' => Carbon::now()]);
     }
 
     public function incomplete()
@@ -40,7 +41,7 @@ class Task extends Model
 
     public function assignedUser(): HasOneThrough
     {
-        return $this->hasOneThrough(User::class, Project::class);
+        return $this->hasOneThrough(User::class, Project::class, 'id', 'id', 'project_id', 'owner_id');
     }
 
     public function project(): BelongsTo

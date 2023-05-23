@@ -31,8 +31,8 @@ class CreateNotificationOnTaskOverdue
 
         $notification = new Notification([
             'type' => NotificationTypeEnum::TASK_OVERDUE,
-            'user_id' => $event->task->user_id,
-            'task_id' => $event->task->id,
+            'user_id' => $event->task->assignedUser->id,
+            'project_id' => $event->task->project->id,
             'message' => "Bruh, you forgot *{$event->task->title}*"
         ]);
 

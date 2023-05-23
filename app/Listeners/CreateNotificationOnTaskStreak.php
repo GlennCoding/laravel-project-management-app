@@ -6,7 +6,9 @@ use App\Enums\NotificationTypeEnum;
 use App\Events\TaskUpdated;
 use App\Models\Notification;
 use App\Models\Task;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class CreateNotificationOnTaskStreak
 {
@@ -28,15 +30,20 @@ class CreateNotificationOnTaskStreak
         if (!$task->isDone) return;
         if (!$task->isDirty('isDone')) return;
 
-        $completedTaskCountForToday = Task::where('user_id', $task->user_id)->whereDate('completedAt', Carbon::today())->count();
+        $completedTaskCountForToday = Task::where('assigned_user_id', $task->assignedUser->id)->whereDate('completedAt', Carbon::today())->count();
+
+//        dd($event);
+//        dd($task->assignedUser->id);
+//        dd(Task::where('assigned_user_id', $task->assignedUser->id)->get());
 
         if ($completedTaskCountForToday === 0) return;
         if ($completedTaskCountForToday % 5 != 0) return;
 
+
         $notification = new Notification([
             'type' => NotificationTypeEnum::TASK_STREAK,
-            'user_id' => $event->task->user_id,
-            'task_id' => $event->task->id,
+            'user_id' => $event->task->assignedUser->id,
+            'project_id' => $event->task->project->id,
             'message' => "Joooo you got a {$completedTaskCountForToday} streak!!"
         ]);
 

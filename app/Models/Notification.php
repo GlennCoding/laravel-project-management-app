@@ -12,9 +12,7 @@ class Notification extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'type', 'user_id', 'project_id', 'task_id', 'assigner_id', 'message'
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'type' => NotificationTypeEnum::class
@@ -29,16 +27,4 @@ class Notification extends Model
     {
         return $this->belongsTo(Project::class);
     }
-
-    public function task(): BelongsTo
-    {
-        return $this->belongsTo(Task::class);
-    }
-
-    public function assigner(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-
 }
